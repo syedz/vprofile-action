@@ -29,6 +29,14 @@ jobs:
       - name: Setup SonarQube
         uses: warchant/setup-sonar-scanner@v7
 
+      # SonarCloud scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        with:
+          projectKey: syedz_vprofile-action
+          organization: syedz
+          token: ${{ secrets.SONAR_TOKEN }}
+
       # Run sonar-scanner
       - name: SonarQube Scan
         run: |
