@@ -34,7 +34,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@master
         with:
           args: >
-            -Dsonar.host.url=${{ secrets.SONAR_URL }
+            -Dsonar.host.url=${{ secrets.SONAR_URL }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
