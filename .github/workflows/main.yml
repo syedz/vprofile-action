@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Code checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for better relevancy of analysis
 
       - name: Maven test
         run: mvn test
@@ -27,26 +29,24 @@ jobs:
 
       # SonarCloud scan
       - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@master
+        uses: SonarSource/sonarcloud-github-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # Generate a token on SonarCloud.io
         with:
+          projectBaseDir: .
           args: >
-            -Dsonar.organization=zee-vprofile-actions
             -Dsonar.projectKey=vproapp24
+            -Dsonar.organization=zee-vprofile-actions
             -Dsonar.sources=src/
-            -Dsonar.junit.reportsPath=target/surefire-reports/
-            -Dsonar.jacoco.reportsPath=target/jacoco.exec
-            -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
             -Dsonar.java.binaries=target/classes
-            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.junit.reportsPath=target/surefire-reports/
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+            -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
 
-      # Check the Quality Gate status.
-      - name: SonarQube Quality Gate check
-        id: sonarqube-quality-gate-check
+      # Check the Quality Gate status
+      - name: SonarCloud Quality Gate check
         uses: sonarsource/sonarqube-quality-gate-action@master
         timeout-minutes: 5
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
