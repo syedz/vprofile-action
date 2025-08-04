@@ -25,21 +25,22 @@ jobs:
           distribution: "temurin" # See 'Supported distributions' for available options
           java-version: "11"
 
-      # Setup sonar-scanner
-      - name: Setup SonarQube
-        uses: warchant/setup-sonar-scanner@v7
-
-      # Run sonar-scanner
-      - name: SonarQube Scan
-        run: sonar-scanner
-          -Dsonar.host.url=https://sonarcloud.io
-          -Dsonar.login=b5efa66cb2e03b1ceab89622f4267480e2cafdf5
-          -Dsonar.organization=zee-vprofile-actions
-          -Dsonar.projectKey=vproapp24
-          -Dsonar.sources=src/
-          -Dsonar.junit.reportsPath=target/surefire-reports/
-          -Dsonar.jacoco.reportsPath=target/jacoco.exec
-          -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
+      # SonarCloud scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: dce7c88c9825ef05554cb4cd7d47c6d3528e8a2b
+        with:
+          args: >
+            -Dsonar.organization=zee-vprofile-actions
+            -Dsonar.projectKey=vproapp24
+            -Dsonar.sources=src/
+            -Dsonar.junit.reportsPath=target/surefire-reports/
+            -Dsonar.jacoco.reportsPath=target/jacoco.exec
+            -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml
+            -Dsonar.java.binaries=target/classes
+            -Dsonar.host.url=https://sonarcloud.io
 
       # Check the Quality Gate status.
       - name: SonarQube Quality Gate check
